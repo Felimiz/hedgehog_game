@@ -498,10 +498,34 @@ MonoBehaviour:
   m_CrouchDisableCollider: {fileID: 1486957422}
   OnLandEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1486957423}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnLanding
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnCrouchEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1486957423}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnCrouching
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!70 &1486957422
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -550,10 +574,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 1486957421}
+  animator: {fileID: 1486957427}
   runSpeed: 40
 --- !u!4 &1486957426 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+  m_PrefabInstance: {fileID: 4060933050883608154}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1486957427 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6668067319049424258, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
   m_PrefabInstance: {fileID: 4060933050883608154}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1774359619
