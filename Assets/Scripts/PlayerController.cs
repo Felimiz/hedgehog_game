@@ -61,7 +61,7 @@ public class CharacterController2D : MonoBehaviour
     }
 
 
-    public void Move(float move, bool crouch, bool jump)
+    public void Move(float move, bool crouch, bool jump, bool roll)
     {
         // If crouching, check to see if the character can stand up
         if (!crouch)
@@ -78,7 +78,7 @@ public class CharacterController2D : MonoBehaviour
         {
 
             // If crouching
-            if (crouch)
+            if (crouch && m_Grounded)
             {
                 if (!m_wasCrouching)
                 {

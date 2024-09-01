@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     float horizontalMove = 0f;
     bool jump = false;
     bool crouch = false;
+    bool roll = false;
 
     // Update is called once per frame
     void Update()
@@ -26,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
         {
             jump = true;
             animator.SetBool("IsJumping", true);
+            animator.SetBool("IsCrouching", false);
         }
 
         if (Input.GetButtonDown("Crouch"))
@@ -37,6 +39,14 @@ public class PlayerMovement : MonoBehaviour
             crouch = false;
         }
 
+        if (Input.GetButtonDown("Roll"))
+        {
+            roll = true;
+        }
+        else if (Input.GetButtonUp("Roll"))
+        {
+            roll = false;
+        }
     }
 
     public void OnLanding()
@@ -49,10 +59,15 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("IsCrouching", isCrouching);
     }
 
+    public void OnRolling(bool isRolling)
+    {
+        animator.SetBool("IsRolling", isRolling);
+    }    
+
     void FixedUpdate()
     {
         // Move our character
-        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
+        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump, roll);
         jump = false;
     }
 }
