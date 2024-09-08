@@ -30,6 +30,9 @@ public class CharacterController2D : MonoBehaviour
     public BoolEvent OnCrouchEvent;
     private bool m_wasCrouching = false;
 
+    public BoolEvent OnRollEvent;
+    private bool m_wasRolling = false;
+
     private void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
@@ -39,6 +42,9 @@ public class CharacterController2D : MonoBehaviour
 
         if (OnCrouchEvent == null)
             OnCrouchEvent = new BoolEvent();
+
+        if (OnRollEvent == null)
+            OnRollEvent = new BoolEvent();
     }
 
     private void FixedUpdate()
@@ -128,8 +134,25 @@ public class CharacterController2D : MonoBehaviour
         if (m_Grounded && jump)
         {
             // Add a vertical force to the player.
-            m_Grounded = true;
+            m_Grounded = false;
             m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+        }
+        // If the player roll...
+        if (roll)
+        {
+            if (!m_wasRolling)
+            {
+                m_wasRolling = true;
+                OnRollEvent.Invoke(true);
+            }
+        }
+        else
+        {
+            if (m_wasRolling)
+            {
+                m_wasRolling = false;
+                OnRollEvent.Invoke(false);
+            }
         }
     }
 
