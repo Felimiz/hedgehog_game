@@ -19,6 +19,11 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
 
+        if (PauseMenu.GameIsPause)
+        {
+            return;
+        }
+
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
