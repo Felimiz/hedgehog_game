@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2631649874296282884}
   - component: {fileID: 6668067319049424258}
   m_Layer: 0
-  m_Name: Headgehog
+  m_Name: Hedgehog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
