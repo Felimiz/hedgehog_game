@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This code only works with player inputs
 public class PlayerMovement : MonoBehaviour
 {
-
     public CharacterController2D controller;
     public Animator animator;
 
@@ -12,13 +12,11 @@ public class PlayerMovement : MonoBehaviour
 
     float horizontalMove = 0f;
     bool jump = false;
-    bool crouch = false;
     bool roll = false;
 
     // Update is called once per frame
     void Update()
     {
-
         if (PauseMenu.GameIsPause)
         {
             return;
@@ -32,16 +30,6 @@ public class PlayerMovement : MonoBehaviour
         {
             jump = true;
             animator.SetBool("IsJumping", true);
-            animator.SetBool("IsCrouching", false);
-        }
-
-        if (Input.GetButtonDown("Crouch"))
-        {
-            crouch = true;
-        }
-        else if (Input.GetButtonUp("Crouch"))
-        {
-            crouch = false;
         }
 
         if (Input.GetButtonDown("Roll"))
@@ -59,20 +47,15 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("IsJumping", false);
     }
 
-    public void OnCrouching(bool isCrouching)
-    {
-        animator.SetBool("IsCrouching", isCrouching);
-    }
-
     public void OnRolling(bool isRolling)
     {
         animator.SetBool("IsRolling", isRolling);
-    }    
+    }
 
     void FixedUpdate()
     {
         // Move our character
-        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump, roll);
+        controller.Move(horizontalMove * Time.fixedDeltaTime, jump, roll);
         jump = false;
     }
 }
