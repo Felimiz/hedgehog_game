@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 40f;
 
     float horizontalMove = 0f;
-    bool jump = false;
     bool roll = false;
+    bool puff = false;
 
     // Update is called once per frame
     void Update()
@@ -26,12 +26,6 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            jump = true;
-            animator.SetBool("IsJumping", true);
-        }
-
         if (Input.GetButtonDown("Roll"))
         {
             roll = true;
@@ -40,11 +34,20 @@ public class PlayerMovement : MonoBehaviour
         {
             roll = false;
         }
+
+        if (Input.GetButtonDown("Puff") && roll)
+        {
+            puff = true;
+        }
+        else if (Input.GetButtonUp("Puff") && roll)
+        {
+            puff = false;
+        }
     }
 
-    public void OnLanding()
+    public void OnPuffing()
     {
-        animator.SetBool("IsJumping", false);
+        animator.SetBool("IsPuffing", true);
     }
 
     public void OnRolling(bool isRolling)
@@ -54,8 +57,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Move our character
-        controller.Move(horizontalMove * Time.fixedDeltaTime, jump, roll);
-        jump = false;
+        controller.Move(horizontalMove * Time.fixedDeltaTime, roll, puff);
     }
 }
