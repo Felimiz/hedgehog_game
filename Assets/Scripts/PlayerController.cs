@@ -32,6 +32,7 @@ public class CharacterController2D : MonoBehaviour
 
     public BoolEvent OnRollEvent;
     private bool m_wasRolling = false;
+    public bool IsFalling = false;
 
     private void Awake()
     {
@@ -64,8 +65,18 @@ public class CharacterController2D : MonoBehaviour
                     OnLandEvent.Invoke();
             }
         }
-    }
 
+        if (m_Rigidbody2D.velocity.y < 0 && !m_Grounded)
+        {
+            IsFalling = true;
+            Debug.Log("Character is falling");
+        }
+        else
+        {
+            IsFalling = false;
+            Debug.Log("Character is not falling");
+        }
+    }
 
     public void Move(float move, bool crouch, bool jump, bool roll)
     {

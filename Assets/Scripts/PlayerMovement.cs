@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -9,12 +10,23 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController2D controller;
     public Animator animator;
 
+    public Transform headTransform;
+    public float rayLength = 0.8f;
     public float runSpeed = 40f;
 
     float horizontalMove = 0f;
     bool jump = false;
     bool crouch = false;
     bool roll = false;
+
+    void Start()
+    {
+        headTransform = transform.Find("Head");
+        if (headTransform == null)
+        {
+            Debug.LogError("Head object not found.");
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -77,13 +89,12 @@ public class PlayerMovement : MonoBehaviour
         jump = false;
 
         //Raycast detection
-        float angle = transform.eulerAngles.z;
+        float angle = headTransform.eulerAngles.z;
         Vector2 rayDirection = new Vector2(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
-        RaycastHit2D ray = Physics2D.Raycast(transform.position, rayDirection, 1.0f, 1 << 0);
+        RaycastHit2D ray = Physics2D.Raycast(headTransform.position, rayDirection, rayLength, 1 << 0);
         if (ray.collider)
         {
-            Debug.DrawRay(transform.position, rayDirection * 1.0f, Color.red, 0, true);
-            Debug.Log(ray.transform.name);
+            Debug.DrawRay(headTransform.position, rayDirection * rayLength, Color.red, 0, true);
 
             Vector2 groundNormal = ray.normal;
             float normalangle = Mathf.Atan2(groundNormal.y, groundNormal.x) * Mathf.Rad2Deg;
@@ -91,9 +102,11 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            Debug.DrawRay(transform.position, rayDirection * 1.0f, Color.blue, 0, true);
-            Debug.Log("No hit detected.");
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            Debug.DrawRay(headTransform.position, rayDirection * rayLength, Color.blue, 0, true);
+            if (controller.IsFalling)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
         }
     }
 }
