@@ -22,6 +22,14 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private float m_Deacceleration = 2f;                       // Deacceleration rate when not rolling.
     private float currentRollSpeed = 0f;                                        // Current speed during roll.
 
+    [SerializeField] private float m_PuffExpandSpeed = 0.1f;                    // 膨脹的速度
+    [SerializeField] private float m_PuffShrinkSpeed = 0.1f;                    // 收縮的速度
+    [SerializeField] private float m_MaxPuffScale = 1.5f;                       // 最大膨脹比例
+    private Vector3 originalScale;                                              // 原本的縮放大小
+    private bool isPuffing;
+    [SerializeField] private float PuffJumplimit = 7f;
+    [SerializeField] private float m_PuffJumpForce = 50f;
+
     [Header("Events")]
     [Space]
 
@@ -37,6 +45,7 @@ public class CharacterController2D : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        originalScale = transform.localScale;
 
         if (OnLandEvent == null)
             OnLandEvent = new UnityEvent();
@@ -108,7 +117,6 @@ public class CharacterController2D : MonoBehaviour
 
                 // 應用滾動速度，根據當前的方向進行移動
                 m_Rigidbody2D.velocity = new Vector2(rollDirection * currentRollSpeed, m_Rigidbody2D.velocity.y);
-
             }
             else
             {
@@ -133,9 +141,21 @@ public class CharacterController2D : MonoBehaviour
                 m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
             }
 
-            if (puff)
+            // 膨脹邏輯
+            if (puff && roll)
             {
-                Debug.Log("is Puffing");
+                isPuffing = true;
+
+                // 膨脹：逐漸增加角色的scale直到達到最大膨脹比例
+                Vector3 targetScale = originalScale * m_MaxPuffScale;
+                transform.localScale = Vector3.Lerp(transform.localScale, targetScale, m_PuffExpandSpeed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                isPuffing = false;
+
+                // 收縮：逐漸恢復角色的scale到原始大小
+                transform.localScale = Vector3.Lerp(transform.localScale, originalScale, m_PuffShrinkSpeed * Time.fixedDeltaTime);
             }
 
             // If the input is moving the player right and the player is facing left...
@@ -148,6 +168,12 @@ public class CharacterController2D : MonoBehaviour
             {
                 Flip();
             }
+            /*
+            if(currentRollSpeed > PuffJumplimit) 
+            {
+                m_Rigidbody2D.AddForce(new Vector2(0f, m_PuffJumpForce));
+            }
+            */
         }
     }
 

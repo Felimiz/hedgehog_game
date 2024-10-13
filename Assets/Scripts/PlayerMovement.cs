@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
             roll = false;
         }
 
-        if (Input.GetButtonDown("Puff") && roll)
+        if (Input.GetButton("Puff") && roll)
         {
             puff = true;
         }
