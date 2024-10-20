@@ -574,7 +574,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &1486957421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -667,7 +667,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 1486957411}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 3f7a72959c9e1bf4095aacde765506b9, type: 2}
+  m_Material: {fileID: 6200000, guid: c8943bda41c587847827cf1b6ad7ab9c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -700,7 +700,7 @@ PolygonCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1486957411}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:

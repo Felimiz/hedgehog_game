@@ -150,12 +150,18 @@ public class CharacterController2D : MonoBehaviour
                 Vector3 targetScale = originalScale * m_MaxPuffScale;
                 transform.localScale = Vector3.Lerp(transform.localScale, targetScale, m_PuffExpandSpeed * Time.fixedDeltaTime);
             }
-            else
+            else if(!puff && roll)
             {
                 isPuffing = false;
 
                 // 收縮：逐漸恢復角色的scale到原始大小
                 transform.localScale = Vector3.Lerp(transform.localScale, originalScale, m_PuffShrinkSpeed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                isPuffing = false;
+                // shirk to normol size while not rolling
+                Vector3 inverseScale = new Vector3(1 / originalScale.x, 1 / originalScale.y, 1);
             }
 
             // If the input is moving the player right and the player is facing left...
