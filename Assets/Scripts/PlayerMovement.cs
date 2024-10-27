@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform headTransform;
     public float rayLength = 0.8f;
     public float runSpeed = 40f;
+    public float rotationSmoothing = 0.1f;
 
     float horizontalMove = 0f;
     bool jump = false;
@@ -91,21 +92,27 @@ public class PlayerMovement : MonoBehaviour
         //Raycast detection
         float angle = headTransform.eulerAngles.z;
         Vector2 rayDirection = new Vector2(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
+
         RaycastHit2D ray = Physics2D.Raycast(headTransform.position, rayDirection, rayLength, 1 << 0);
+
         if (ray.collider)
         {
             Debug.DrawRay(headTransform.position, rayDirection * rayLength, Color.red, 0, true);
 
             Vector2 groundNormal = ray.normal;
-            float normalangle = Mathf.Atan2(groundNormal.y, groundNormal.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, normalangle - 90);
+            float normalAngle = Mathf.Atan2(groundNormal.y, groundNormal.x) * Mathf.Rad2Deg;
+
+            Quaternion targetRotation = Quaternion.Euler(0, 0, normalAngle - 90);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
         }
         else
         {
             Debug.DrawRay(headTransform.position, rayDirection * rayLength, Color.blue, 0, true);
+
             if (controller.IsFalling)
             {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                Quaternion targetRotation = Quaternion.Euler(0, 0, 0);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
             }
         }
     }
