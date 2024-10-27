@@ -22,14 +22,6 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private float m_Deacceleration = 2f;                       // Deacceleration rate when not rolling.
     private float currentRollSpeed = 0f;                                        // Current speed during roll.
 
-    [SerializeField] private float m_PuffExpandSpeed = 0.1f;                    // 膨脹的速度
-    [SerializeField] private float m_PuffShrinkSpeed = 0.1f;                    // 收縮的速度
-    [SerializeField] private float m_MaxPuffScale = 1.5f;                       // 最大膨脹比例
-    private Vector3 originalScale;                                              // 原本的縮放大小
-    private bool isPuffing;
-    [SerializeField] private float PuffJumplimit = 7f;
-    [SerializeField] private float m_PuffJumpForce = 50f;
-
     [Header("Events")]
     [Space]
 
@@ -45,7 +37,6 @@ public class CharacterController2D : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
-        originalScale = transform.localScale;
 
         if (OnLandEvent == null)
             OnLandEvent = new UnityEvent();
@@ -72,7 +63,7 @@ public class CharacterController2D : MonoBehaviour
         }
     }
 
-    public void Move(float move, bool roll, bool puff)
+    public void Move(float move, bool roll)
     {
         // Only control the player if grounded or airControl is turned on
         if (m_Grounded || m_AirControl)
@@ -139,29 +130,6 @@ public class CharacterController2D : MonoBehaviour
                 // Normal movement
                 Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody2D.velocity.y);
                 m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
-            }
-
-            // 膨脹邏輯
-            if (puff && roll)
-            {
-                isPuffing = true;
-
-                // 膨脹：逐漸增加角色的scale直到達到最大膨脹比例
-                Vector3 targetScale = originalScale * m_MaxPuffScale;
-                transform.localScale = Vector3.Lerp(transform.localScale, targetScale, m_PuffExpandSpeed * Time.fixedDeltaTime);
-            }
-            else if(!puff && roll)
-            {
-                isPuffing = false;
-
-                // 收縮：逐漸恢復角色的scale到原始大小
-                transform.localScale = Vector3.Lerp(transform.localScale, originalScale, m_PuffShrinkSpeed * Time.fixedDeltaTime);
-            }
-            else
-            {
-                isPuffing = false;
-                // shirk to normol size while not rolling
-                Vector3 inverseScale = new Vector3(1 / originalScale.x, 1 / originalScale.y, 1);
             }
 
             // If the input is moving the player right and the player is facing left...

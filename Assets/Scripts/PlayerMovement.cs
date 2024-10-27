@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
 
     float horizontalMove = 0f;
     bool roll = false;
-    bool puff = false;
 
     // Update is called once per frame
     void Update()
@@ -34,20 +33,6 @@ public class PlayerMovement : MonoBehaviour
         {
             roll = false;
         }
-
-        if (Input.GetButton("Puff") && roll)
-        {
-            puff = true;
-        }
-        else if (Input.GetButtonUp("Puff") && roll)
-        {
-            puff = false;
-        }
-    }
-
-    public void OnPuffing()
-    {
-        animator.SetBool("IsPuffing", true);
     }
 
     public void OnRolling(bool isRolling)
@@ -57,6 +42,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        controller.Move(horizontalMove * Time.fixedDeltaTime, roll, puff);
+        controller.Move(horizontalMove * Time.fixedDeltaTime, roll);
     }
 }
