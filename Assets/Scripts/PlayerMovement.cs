@@ -11,9 +11,12 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
 
     public Transform headTransform;
-    public float rayLength = 0.8f;
+    public Transform bodyTransform;
+    public float headrayLength = 0.8f;
+    public float bodyrayLength = 0.8f;
     public float runSpeed = 40f;
     public float rotationSmoothing = 0.1f;
+    public bool rayhit = true;
 
     float horizontalMove = 0f;
     bool jump = false;
@@ -26,6 +29,11 @@ public class PlayerMovement : MonoBehaviour
         if (headTransform == null)
         {
             Debug.LogError("Head object not found.");
+        }
+        bodyTransform = transform.Find("Body");
+        if (bodyTransform == null)
+        {
+            Debug.LogError("Body object not found.");
         }
     }
 
@@ -91,29 +99,47 @@ public class PlayerMovement : MonoBehaviour
 
         //Raycast detection
         float angle = headTransform.eulerAngles.z;
-        Vector2 rayDirection = new Vector2(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
+        Vector2 rayDirection = new(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
 
-        RaycastHit2D ray = Physics2D.Raycast(headTransform.position, rayDirection, rayLength, 1 << 0);
+        RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, rayDirection, headrayLength, 1 << 0);
+        RaycastHit2D bodyRay = Physics2D.Raycast(bodyTransform.position, rayDirection, bodyrayLength, 1 << 0);
 
-        if (ray.collider)
+        if (headRay.collider)
         {
-            Debug.DrawRay(headTransform.position, rayDirection * rayLength, Color.red, 0, true);
+            Debug.DrawRay(headTransform.position, rayDirection * headrayLength, Color.red, 0, true);
+        }
+        else
+        {
+            Debug.DrawRay(headTransform.position, rayDirection * headrayLength, Color.blue, 0, true);
+        }
 
-            Vector2 groundNormal = ray.normal;
-            float normalAngle = Mathf.Atan2(groundNormal.y, groundNormal.x) * Mathf.Rad2Deg;
+        if (bodyRay.collider)
+        {
+            Debug.DrawRay(bodyTransform.position, rayDirection * bodyrayLength, Color.red, 0, true);
+        }
+        else
+        {
+            Debug.DrawRay(bodyTransform.position, rayDirection * bodyrayLength, Color.blue, 0, true);
+        }
 
+        float normalAngle = Mathf.Atan2(headRay.normal.y, headRay.normal.x) * Mathf.Rad2Deg;
+
+        if (headRay.collider)
+        {
             Quaternion targetRotation = Quaternion.Euler(0, 0, normalAngle - 90);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
+        }
+        else if (!headRay.collider && bodyRay.collider)
+        {
+            float rotate = (controller.m_FacingRight ? +1 : -1) * 45.0f;
+            Quaternion targetRotation = Quaternion.Euler(0, 0, angle - rotate);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
         }
         else
         {
-            Debug.DrawRay(headTransform.position, rayDirection * rayLength, Color.blue, 0, true);
-
-            if (controller.IsFalling)
-            {
-                Quaternion targetRotation = Quaternion.Euler(0, 0, 0);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
-            }
+            Quaternion targetRotation = Quaternion.Euler(0, 0, 0);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
+            rayhit = false;
         }
     }
 }

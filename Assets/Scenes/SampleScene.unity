@@ -305,8 +305,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 302785549}
   m_LocalRotation: {x: -0, y: -0, z: 0.70612895, w: -0.70808333}
-  m_LocalPosition: {x: -13.7, y: 6.38, z: 0}
-  m_LocalScale: {x: 1.0949, y: 8.708588, z: 1}
+  m_LocalPosition: {x: -13.51, y: 6.38, z: 0}
+  m_LocalScale: {x: 1.5, y: 8.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -398,7 +398,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.74, y: 12.33, z: -9.9747925}
+  m_LocalPosition: {x: -8.95, y: -1.72, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -535,7 +535,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817842334}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.74, y: 12.33, z: -9.9747925}
+  m_LocalPosition: {x: -8.95, y: -1.72, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1102,8 +1102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a03245446c54904f8c3581da7e53621, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_JumpForce: 400
-  adhesionForce: 10
+  m_JumpForce: 1000
+  adhesionForce: 30
   m_CrouchSpeed: 0.36
   m_MovementSmoothing: 0.05
   m_AirControl: 1
@@ -1113,6 +1113,7 @@ MonoBehaviour:
   m_GroundCheck: {fileID: 189796640}
   m_CeilingCheck: {fileID: 1774359620}
   m_CrouchDisableCollider: {fileID: 1486957422}
+  m_FacingRight: 1
   OnLandEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1159,6 +1160,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   IsFalling: 0
+  movement: {fileID: 0}
 --- !u!70 &1486957422
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -1209,9 +1211,12 @@ MonoBehaviour:
   controller: {fileID: 1486957421}
   animator: {fileID: 1486957427}
   headTransform: {fileID: 0}
-  rayLength: 1
-  runSpeed: 40
+  bodyTransform: {fileID: 0}
+  headrayLength: 1
+  bodyrayLength: 0.8
+  runSpeed: 30
   rotationSmoothing: 0.1
+  rayhit: 1
 --- !u!4 &1486957426 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
@@ -2614,11 +2619,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -11.74
+      value: -8.95
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.33
+      value: -1.72
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.z
