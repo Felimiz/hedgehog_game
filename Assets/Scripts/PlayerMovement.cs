@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public float runSpeed = 40f;
     public float rotationSmoothing = 0.1f;
     public bool rayhit = true;
+    private float smoothVelocity = 0;
 
     float horizontalMove = 0f;
     bool jump = false;
@@ -98,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         jump = false;
 
         //Raycast detection
-        float angle = headTransform.eulerAngles.z;
+        float angle = transform.eulerAngles.z;
         Vector2 rayDirection = new(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
 
         RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, rayDirection, headrayLength, 1 << 0);
@@ -126,19 +127,25 @@ public class PlayerMovement : MonoBehaviour
 
         if (headRay.collider)
         {
-            Quaternion targetRotation = Quaternion.Euler(0, 0, normalAngle - 90);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
+            float targetAngle = normalAngle - 90;
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+
+            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
         }
         else if (!headRay.collider && bodyRay.collider)
         {
             float rotate = (controller.m_FacingRight ? +1 : -1) * 45.0f;
-            Quaternion targetRotation = Quaternion.Euler(0, 0, angle - rotate);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
+            float targetAngle = angle - rotate;
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+
+            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
         }
         else
         {
-            Quaternion targetRotation = Quaternion.Euler(0, 0, 0);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSmoothing);
+            float targetAngle = 0;
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+
+            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
             rayhit = false;
         }
     }
