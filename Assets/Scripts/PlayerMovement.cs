@@ -6,12 +6,18 @@ using UnityEngine.Diagnostics;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public PlayerController controller;
+
+    float HorizontalMove = 0f;
 
     private void Update()
     {
-        if(Input.GetButton ("Horizontal"))
-        {
-            Debug.Log(Input.GetButton("Horizontal"));
-        }
+        HorizontalMove = Input.GetAxisRaw("Horizontal");
     }
+
+    private void FixedUpdate()
+    {
+        controller.Move(HorizontalMove);
+    }
+
 }
