@@ -398,7 +398,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.95, y: -1.72, z: -9.9747925}
+  m_LocalPosition: {x: -10.99, y: 8.15, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -535,7 +535,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817842334}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.95, y: -1.72, z: -9.9747925}
+  m_LocalPosition: {x: -10.99, y: 8.15, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1212,11 +1212,15 @@ MonoBehaviour:
   animator: {fileID: 1486957427}
   headTransform: {fileID: 0}
   bodyTransform: {fileID: 0}
-  headrayLength: 1
-  bodyrayLength: 0.8
+  tailTransform: {fileID: 0}
+  turnTransformA: {fileID: 0}
+  turnTransformB: {fileID: 0}
+  mainrayLength: 0.3
+  checkArayLength: 0.8
+  checkBrayLength: 0.15
   runSpeed: 30
   rotationSmoothing: 0.1
-  rayhit: 1
+  isRotating: 0
 --- !u!4 &1486957426 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
@@ -2601,6 +2605,18 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2767853632164496920, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_Name
+      value: TurnCheckA
+      objectReference: {fileID: 0}
+    - target: {fileID: 3993288569859342975, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176725370059761606, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.45
+      objectReference: {fileID: 0}
     - target: {fileID: 4862713934919234444, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_Name
       value: Hedgehog
@@ -2619,11 +2635,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.95
+      value: -10.99
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.72
+      value: 8.15
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2656,6 +2672,14 @@ PrefabInstance:
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5767956370771149953, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6582642968684375630, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

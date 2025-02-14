@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.Diagnostics;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -12,11 +13,19 @@ public class PlayerMovement : MonoBehaviour
 
     public Transform headTransform;
     public Transform bodyTransform;
-    public float headrayLength = 0.8f;
-    public float bodyrayLength = 0.8f;
+    public Transform tailTransform;
+    public Transform turnTransformA;
+    public Transform turnTransformB;
+
+    public float mainrayLength = 0.3f;
+    public float checkArayLength = 0.8f;
+    public float checkBrayLength = 0.1f;
     public float runSpeed = 40f;
     public float rotationSmoothing = 0.1f;
-    public bool rayhit = true;
+    //public bool rayhit = true;
+    public bool isRotating = false;
+    private float targetAngle;
+    private float turnAngle;
     private float smoothVelocity = 0;
 
     float horizontalMove = 0f;
@@ -35,6 +44,21 @@ public class PlayerMovement : MonoBehaviour
         if (bodyTransform == null)
         {
             Debug.LogError("Body object not found.");
+        }
+        tailTransform = transform.Find("Tail");
+        if (tailTransform == null)
+        {
+            Debug.LogError("Tail object not found.");
+        }
+        turnTransformA = transform.Find("TurnCheckA");
+        if (tailTransform == null)
+        {
+            Debug.LogError("TurnCheckA object not found.");
+        }
+        turnTransformB = transform.Find("TurnCheckB");
+        if (tailTransform == null)
+        {
+            Debug.LogError("TurnCheckB object not found.");
         }
     }
 
@@ -90,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
     public void OnRolling(bool isRolling)
     {
         animator.SetBool("IsRolling", isRolling);
-    }    
+    }
 
     void FixedUpdate()
     {
@@ -99,32 +123,109 @@ public class PlayerMovement : MonoBehaviour
         jump = false;
 
         //Raycast detection
-        float angle = transform.eulerAngles.z;
-        Vector2 rayDirection = new(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
+        float CurrentAngle = transform.eulerAngles.z;
+        float facing = (controller.m_FacingRight ? +1 : -1);
+        Vector2 rayDirection = new(Mathf.Cos((CurrentAngle - 90) * Mathf.Deg2Rad), Mathf.Sin((CurrentAngle - 90) * Mathf.Deg2Rad));
+        Vector2 turnrayDirection = new(Mathf.Cos((CurrentAngle - 180) * Mathf.Deg2Rad) * facing, Mathf.Sin((CurrentAngle - 180) * Mathf.Deg2Rad) * facing);
 
-        RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, rayDirection, headrayLength, 1 << 0);
-        RaycastHit2D bodyRay = Physics2D.Raycast(bodyTransform.position, rayDirection, bodyrayLength, 1 << 0);
+        RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, rayDirection, mainrayLength, 1 << 0);
+        RaycastHit2D bodyRay = Physics2D.Raycast(bodyTransform.position, rayDirection, mainrayLength, 1 << 0);
+        RaycastHit2D tailRay = Physics2D.Raycast(tailTransform.position, rayDirection, mainrayLength, 1 << 0);
+        RaycastHit2D turnRayA = Physics2D.Raycast(turnTransformA.position, turnrayDirection, checkArayLength, 1 << 0);
+        RaycastHit2D turnRayB = Physics2D.Raycast(turnTransformB.position, -turnrayDirection, checkBrayLength, 1 << 0);
 
         if (headRay.collider)
         {
-            Debug.DrawRay(headTransform.position, rayDirection * headrayLength, Color.red, 0, true);
+            Debug.DrawRay(headTransform.position, rayDirection * mainrayLength, Color.red, 0, true);
         }
         else
         {
-            Debug.DrawRay(headTransform.position, rayDirection * headrayLength, Color.blue, 0, true);
+            Debug.DrawRay(headTransform.position, rayDirection * mainrayLength, Color.blue, 0, true);
         }
 
         if (bodyRay.collider)
         {
-            Debug.DrawRay(bodyTransform.position, rayDirection * bodyrayLength, Color.red, 0, true);
+            Debug.DrawRay(bodyTransform.position, rayDirection * mainrayLength, Color.red, 0, true);
         }
         else
         {
-            Debug.DrawRay(bodyTransform.position, rayDirection * bodyrayLength, Color.blue, 0, true);
+            Debug.DrawRay(bodyTransform.position, rayDirection * mainrayLength, Color.blue, 0, true);
         }
 
-        float normalAngle = Mathf.Atan2(headRay.normal.y, headRay.normal.x) * Mathf.Rad2Deg;
+        if (tailRay.collider)
+        {
+            Debug.DrawRay(tailTransform.position, rayDirection * mainrayLength, Color.red, 0, true);
+        }
+        else
+        {
+            Debug.DrawRay(tailTransform.position, rayDirection * mainrayLength, Color.blue, 0, true);
+        }
 
+        if (turnRayA.collider)
+        {
+            Debug.DrawRay(turnTransformA.position, turnrayDirection * checkArayLength, Color.red, 0, true);
+        }
+        else
+        {
+            Debug.DrawRay(turnTransformA.position, turnrayDirection * checkArayLength, Color.blue, 0, true);
+        }
+
+        if (turnRayB.collider)
+        {
+            Debug.DrawRay(turnTransformB.position, -turnrayDirection * checkBrayLength, Color.red, 0, true);
+        }
+        else
+        {
+            Debug.DrawRay(turnTransformB.position, -turnrayDirection * checkBrayLength, Color.blue, 0, true);
+        }
+
+        //float normalAngle = Mathf.Atan2(headRay.normal.y, headRay.normal.x) * Mathf.Rad2Deg;
+
+        if (!isRotating)
+        {
+            if (!headRay.collider && !bodyRay.collider && tailRay.collider && turnRayA.collider && !turnRayB.collider)
+            {
+                turnAngle = Mathf.Atan2(turnRayA.normal.y, turnRayA.normal.x) * Mathf.Rad2Deg;
+                targetAngle = turnAngle - 90;
+                isRotating = true;
+            }
+            else if (turnRayB.collider)
+            {
+                turnAngle = Mathf.Atan2(turnRayB.normal.y, turnRayB.normal.x) * Mathf.Rad2Deg;
+                targetAngle = turnAngle - 90;
+                isRotating = true;
+
+            }
+            else if (!headRay.collider && !bodyRay.collider && !tailRay.collider)
+            {
+                targetAngle = 0;
+                isRotating = true;
+            }
+            else
+            {
+                if (bodyRay.collider)
+                {
+                    turnAngle = Mathf.Atan2(bodyRay.normal.y, bodyRay.normal.x) * Mathf.Rad2Deg;
+                }
+                else if (tailRay.collider)
+                {
+                    turnAngle = Mathf.Atan2(tailRay.normal.y, tailRay.normal.x) * Mathf.Rad2Deg;
+                }
+                else if (headRay.collider)
+                {
+                    turnAngle = Mathf.Atan2(headRay.normal.y, headRay.normal.x) * Mathf.Rad2Deg;
+                }
+                targetAngle = turnAngle - 90;
+                isRotating = true;
+            }
+        }
+
+        if (isRotating)
+        {
+            Rotate();
+        }
+
+        /*
         if (headRay.collider)
         {
             float targetAngle = normalAngle - 90;
@@ -135,7 +236,7 @@ public class PlayerMovement : MonoBehaviour
         else if (!headRay.collider && bodyRay.collider)
         {
             float rotate = (controller.m_FacingRight ? +1 : -1) * 45.0f;
-            float targetAngle = angle - rotate;
+            float targetAngle = CurrentAngle - rotate;
             float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
 
             transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
@@ -147,6 +248,18 @@ public class PlayerMovement : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
             rayhit = false;
+        }
+        */
+    }
+
+    void Rotate()
+    {
+        float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+        transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
+        if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, targetAngle)) < 0.1f)
+        {
+            transform.rotation = Quaternion.Euler(0, 0, targetAngle);
+            isRotating = false;
         }
     }
 }
