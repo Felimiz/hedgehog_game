@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEditor.Progress;
 
 public class CharacterController2D : MonoBehaviour
 {
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
-    [SerializeField] public float adhesionForce = 30f;
+    [SerializeField] public float adhesionForceA = 30f;
+    [SerializeField] public float adhesionForceB = 50f;
     [SerializeField] private float rollingForce = 10f;
     [Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
     [Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
@@ -21,6 +23,7 @@ public class CharacterController2D : MonoBehaviour
     private Rigidbody2D m_Rigidbody2D;
     public bool m_FacingRight = true;  // For determining which way the player is currently facing.
     private Vector3 m_Velocity = Vector3.zero;
+    private float m_adhesionForce;
 
     [Header("Events")]
     [Space]
@@ -34,7 +37,7 @@ public class CharacterController2D : MonoBehaviour
     private bool m_wasCrouching = false;
 
     public BoolEvent OnRollEvent;
-    private bool m_wasRolling = false;
+    public bool m_wasRolling = false;
     public bool IsFalling = false;
 
     public PlayerMovement movement;
@@ -51,6 +54,9 @@ public class CharacterController2D : MonoBehaviour
 
         if (OnRollEvent == null)
             OnRollEvent = new BoolEvent();
+
+        if (movement == null)
+            movement = GetComponent<PlayerMovement>();
     }
 
     private void FixedUpdate()
@@ -80,6 +86,22 @@ public class CharacterController2D : MonoBehaviour
             IsFalling = false;
         }
 
+        if (movement.rayhit && !wasGrounded)
+        {
+            m_adhesionForce = adhesionForceB;
+        }
+        else if (movement.rayhit && wasGrounded)
+        {
+            m_adhesionForce = adhesionForceA;
+        }
+        else
+        {
+            m_adhesionForce = 0f;
+        }
+
+        //Debug.Log(m_adhesionForce);
+
+        /*
         if (wasGrounded)
         {
             Debug.Log("Grounded");
@@ -88,6 +110,7 @@ public class CharacterController2D : MonoBehaviour
         {
             Debug.Log("UnGrounded");
         }
+        */
     }
     public void Move(float move, bool crouch, bool jump, bool roll)
     {
@@ -136,8 +159,7 @@ public class CharacterController2D : MonoBehaviour
 
             // Move the character by finding the target velocity
             Vector3 targetVelocity = move * 10f * transform.right;
-            //float m_adhesionForce = (movement.rayhit && !m_Grounded ? 50f : adhesionForce);
-            m_Rigidbody2D.AddForce(-transform.up * adhesionForce);
+            m_Rigidbody2D.AddForce(-transform.up * m_adhesionForce);
             // And then smoothing it out and applying it to the character
             m_Rigidbody2D.velocity = Vector3.SmoothDamp(m_Rigidbody2D.velocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
@@ -155,7 +177,7 @@ public class CharacterController2D : MonoBehaviour
             }
         }
         // If the player should jump...
-        if (m_Grounded && jump)
+        if (m_Grounded && jump && m_wasRolling)
         {
             // Add a vertical force to the player.
             m_Grounded = true;
