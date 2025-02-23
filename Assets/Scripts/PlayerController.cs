@@ -1,12 +1,14 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using static UnityEditor.Progress;
 
 public class CharacterController2D : MonoBehaviour
 {
-    [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
-    [SerializeField] public float adhesionForceA = 30f;
-    [SerializeField] public float adhesionForceB = 50f;
+    [Range(0.7f, 2)][SerializeField] private float PuffRadius = 1.5f;                          // Amount of force added when the player jumps.
+    [Range(0, 2)][SerializeField] private float PuffTime = 0.5f;
+    [SerializeField] public float adhesionForceA = 30f;                         // Adhension force while on ground
+    [SerializeField] public float adhesionForceB = 50f;                         // Adhension force while NOT on ground
     [SerializeField] private float rollingForce = 10f;
     [Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
     [Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
@@ -15,7 +17,7 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
     [SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
     [SerializeField] private Collider2D m_RollDisableCollider;                  // A collider that will be disabled when rolling(Along with m_CrouchDisableCollider)
-    [SerializeField] private Collider2D m_RollingEnableCollider;                // A collider that will be enabled when rolling
+    [SerializeField] private CircleCollider2D RollingCollider;                // A collider that will be enabled when rolling
 
     const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
     private bool m_Grounded;            // Whether or not the player is grounded.
@@ -24,6 +26,7 @@ public class CharacterController2D : MonoBehaviour
     public bool m_FacingRight = true;  // For determining which way the player is currently facing.
     private Vector3 m_Velocity = Vector3.zero;
     private float m_adhesionForce;
+    private float RCOriginalRad; // the oringinal radius of rolling collider
 
     [Header("Events")]
     [Space]
@@ -45,6 +48,7 @@ public class CharacterController2D : MonoBehaviour
     private void Awake()
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        RCOriginalRad = RollingCollider.radius;
 
         if (OnLandEvent == null)
             OnLandEvent = new UnityEvent();
@@ -112,7 +116,7 @@ public class CharacterController2D : MonoBehaviour
         }
         */
     }
-    public void Move(float move, bool crouch, bool jump, bool roll)
+    public void Move(float move, bool crouch, bool puff, bool roll)
     {
         // If crouching, check to see if the character can stand up
         if (!crouch)
@@ -176,12 +180,15 @@ public class CharacterController2D : MonoBehaviour
                 Flip();
             }
         }
-        // If the player should jump...
-        if (m_Grounded && jump && m_wasRolling)
+        // If the player should puff...
+        if (puff)
         {
-            // Add a vertical force to the player.
-            m_Grounded = true;
-            m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+            Debug.Log("Puffing");
+            RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, PuffRadius, PuffTime);
+        }
+        else
+        {
+            RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, RCOriginalRad, PuffTime);
         }
         // If the player roll...
         if (roll)
@@ -197,10 +204,11 @@ public class CharacterController2D : MonoBehaviour
                 m_CrouchDisableCollider.enabled = false;
             if (m_RollDisableCollider != null)
                 m_RollDisableCollider.enabled = false;
-            if (m_RollingEnableCollider != null)
-                m_RollingEnableCollider.enabled = true;
+            if (RollingCollider != null)
+                RollingCollider.enabled = true;
 
-            m_Rigidbody2D.AddForce(transform.right * move * rollingForce);
+            m_Rigidbody2D.constraints = RigidbodyConstraints2D.None;
+            m_Rigidbody2D.AddForce(m_GroundCheck.right * move * rollingForce); // Bug:施力方向會隨滾動轉向(交流電)
 
         }
         else
@@ -216,8 +224,10 @@ public class CharacterController2D : MonoBehaviour
                 m_CrouchDisableCollider.enabled = true;
             if (m_RollDisableCollider != null)
                 m_RollDisableCollider.enabled = true;
-            if (m_RollingEnableCollider != null)
-                m_RollingEnableCollider.enabled = false;
+            if (RollingCollider != null)
+                RollingCollider.enabled = false;
+
+            m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
 

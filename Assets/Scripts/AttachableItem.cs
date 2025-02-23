@@ -5,15 +5,14 @@ using UnityEngine;
 
 public class AttachableItem : MonoBehaviour
 {
-    public CharacterController2D controller;
 
     public float detachForce = 5f;
 
     private Transform item;
     private Collider2D itemCol;
     private Rigidbody2D itemRB;
-    private GameObject target;
-    private Vector3 posOffset;
+    private GameObject target; // 附著者
+    private Vector3 posOffset; // 1.蘋果和玩家的距離(固定) 2.玩家->蘋果 的方向
     private bool is_attached = false;
 
     private void Awake()
@@ -31,7 +30,7 @@ public class AttachableItem : MonoBehaviour
             item.position = target.transform.position + posOffset;
         }
 
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V)) // "按下"V時，將玩家身上附著的蘋果分離
             if (is_attached)
                 Detach();
     }
@@ -41,12 +40,13 @@ public class AttachableItem : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            itemRB.bodyType = RigidbodyType2D.Dynamic; // 將蘋果狀態轉為"動態"
             target = collision.gameObject;
             posOffset = item.position - target.transform.position;
-            item.parent = target.transform;
-            itemCol.enabled = false;
+            item.parent = target.transform; //與玩家建立子母關係
+            //itemCol.enabled = false; // 取消蘋果collider
             is_attached = true;
-            itemRB.constraints = RigidbodyConstraints2D.FreezeRotation;
+            itemRB.constraints = RigidbodyConstraints2D.FreezeRotation; // 將蘋果Z軸鎖定
             Debug.Log(posOffset);
         }
     }
@@ -54,11 +54,10 @@ public class AttachableItem : MonoBehaviour
     private void Detach()
     {
         is_attached = false;
-        itemRB.bodyType = RigidbodyType2D.Dynamic;
-        itemRB.AddForce(posOffset * detachForce);
-        item.parent = null;
-        itemRB.constraints = RigidbodyConstraints2D.None;
+        itemRB.AddForce(posOffset * detachForce); // 將蘋果朝玩家座標向蘋果的方向施力
+        item.parent = null; //解除與玩家的子母關係
+        itemRB.constraints = RigidbodyConstraints2D.None; // 取消Z軸鎖定
         //yield return new WaitForSeconds(0.1f);
-        itemCol.enabled = true;
+        //temCol.enabled = true; // 開啟蘋果collider
     }
 }

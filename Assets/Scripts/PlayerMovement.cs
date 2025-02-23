@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private float smoothVelocity = 0;
 
     float horizontalMove = 0f;
-    bool jump = false;
+    bool puff = false;
     bool crouch = false;
     bool roll = false;
 
@@ -75,11 +75,16 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButton("puff"))
         {
-            jump = true;
+            puff = true;
             animator.SetBool("IsJumping", true);
             animator.SetBool("IsCrouching", false);
+        }
+        if (Input.GetButtonUp("puff"))
+        {
+            puff = false;
+            animator.SetBool("IsJumping", false);
         }
 
         if (Input.GetButtonDown("Crouch"))
@@ -119,22 +124,21 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // Move our character
-        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump, roll);
-        jump = false;
+        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, puff, roll);
 
         //Raycast detection
         float CurrentAngle = transform.eulerAngles.z;
-        float facing = (controller.m_FacingRight ? +1 : -1);
-        Vector2 rayDirection = new(Mathf.Cos((CurrentAngle - 90) * Mathf.Deg2Rad), Mathf.Sin((CurrentAngle - 90) * Mathf.Deg2Rad));
-        Vector2 turnrayDirection = new(Mathf.Cos((CurrentAngle - 180) * Mathf.Deg2Rad) * facing, Mathf.Sin((CurrentAngle - 180) * Mathf.Deg2Rad) * facing);
+        float facing = (controller.m_FacingRight ? +1 : -1); // 決定玩家移動方向
+        Vector2 rayDirection = new(Mathf.Cos((CurrentAngle - 90) * Mathf.Deg2Rad), Mathf.Sin((CurrentAngle - 90) * Mathf.Deg2Rad)); // 決定偵測地面的射線的方向，相對於玩家X軸正向順時鐘轉九十度(法線)
+        Vector2 turnrayDirection = new(Mathf.Cos((CurrentAngle - 180) * Mathf.Deg2Rad) * facing, Mathf.Sin((CurrentAngle - 180) * Mathf.Deg2Rad) * facing); // 玩家面對方向的反向(即X軸反向)，轉向時轉向
 
-        RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, rayDirection, mainrayLength, 1 << 0);
-        RaycastHit2D bodyRay = Physics2D.Raycast(bodyTransform.position, rayDirection, mainrayLength, 1 << 0);
-        RaycastHit2D tailRay = Physics2D.Raycast(tailTransform.position, rayDirection, mainrayLength, 1 << 0);
-        RaycastHit2D turnRayA = Physics2D.Raycast(turnTransformA.position, turnrayDirection, checkArayLength, 1 << 0);
-        RaycastHit2D turnRayB = Physics2D.Raycast(turnTransformB.position, -turnrayDirection, checkBrayLength, 1 << 0);
+        RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, rayDirection, mainrayLength, 1 << 0); // 位於玩家頭部的偵測射線，照玩家X軸法線發射
+        RaycastHit2D bodyRay = Physics2D.Raycast(bodyTransform.position, rayDirection, mainrayLength, 1 << 0); // 身體中間的偵測射線，照玩家X軸法線發射
+        RaycastHit2D tailRay = Physics2D.Raycast(tailTransform.position, rayDirection, mainrayLength, 1 << 0); // 尾部的偵測射線，照玩家X軸法線發射
+        RaycastHit2D turnRayA = Physics2D.Raycast(turnTransformA.position, turnrayDirection, checkArayLength, 1 << 0); // 在玩家底部的射線，照玩家面對反向發射
+        RaycastHit2D turnRayB = Physics2D.Raycast(turnTransformB.position, -turnrayDirection, checkBrayLength, 1 << 0); // 在刺蝟嘴邊的射線，照玩家面對方向發射
 
-        if (!controller.m_wasRolling)
+        if (!controller.m_wasRolling) // 移動模式時的射線偵測，畫出所有射線
         {
             if (headRay.collider)
             {
@@ -184,27 +188,28 @@ public class PlayerMovement : MonoBehaviour
             }
 
 
-            if (!isRotating)
+            if (!isRotating) // 是否執行Rotate()
             {
-                if (!headRay.collider && !bodyRay.collider && tailRay.collider && turnRayA.collider && !turnRayB.collider)
+                if (!headRay.collider && !bodyRay.collider && tailRay.collider && turnRayA.collider && !turnRayB.collider) // 尾部和底部的射線偵測到地面
                 {
-                    turnAngle = Mathf.Atan2(turnRayA.normal.y, turnRayA.normal.x) * Mathf.Rad2Deg;
-                    targetAngle = turnAngle - 90;
+                    turnAngle = Mathf.Atan2(turnRayA.normal.y, turnRayA.normal.x) * Mathf.Rad2Deg; // 取得玩家(底部射線)與地面的夾角
+                    targetAngle = turnAngle - 90; // 將變量設定成正確旋轉角度
                     isRotating = true;
                 }
-                else if (turnRayB.collider)
+                else if (turnRayB.collider) // 嘴邊射線偵測到地面
                 {
-                    turnAngle = Mathf.Atan2(turnRayB.normal.y, turnRayB.normal.x) * Mathf.Rad2Deg;
+                    turnAngle = Mathf.Atan2(turnRayB.normal.y, turnRayB.normal.x) * Mathf.Rad2Deg; // 取得玩家(嘴邊射線)與地面的夾角
                     targetAngle = turnAngle - 90;
                     isRotating = true;
 
                 }
-                else if (!headRay.collider && !bodyRay.collider && !tailRay.collider)
+                else if (!headRay.collider && !bodyRay.collider && !tailRay.collider) // 頭部、身體、尾部射線皆未偵測到地面(不考慮底部&嘴邊)
                 {
                     targetAngle = 0;
                     isRotating = true;
                 }
-                else
+
+                else // 當底部、嘴邊射線皆未偵測到地面，但頭部、身體、尾部個別偵測到地面時，將玩家對齊地面
                 {
                     if (bodyRay.collider)
                     {
@@ -228,16 +233,19 @@ public class PlayerMovement : MonoBehaviour
                 Rotate();
             }
         }
-        
+
+        else // 滾動模式
+        {
+        }
     }
 
     void Rotate()
     {
-        float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
-        transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
-        if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, targetAngle)) < 0.1f)
+        float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing); // 將當前玩家方向漸變到目標方向
+        transform.rotation = Quaternion.Euler(0, 0, smoothAngle); // 反映變量
+        if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, targetAngle)) < 0.1f) //如果玩家當前方向與欲轉動方向夾角<0.1度
         {
-            transform.rotation = Quaternion.Euler(0, 0, targetAngle);
+            transform.rotation = Quaternion.Euler(0, 0, targetAngle); // 直接轉動至該角度
             isRotating = false;
         }
     }
