@@ -1683,6 +1683,11 @@ Transform:
   m_Father: {fileID: 1057085573}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -89.842}
+--- !u!4 &1270728403 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5767956370771149953, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+  m_PrefabInstance: {fileID: 4060933050883608154}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1274143120
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,11 +1846,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!4 &1279172437 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6003252869248540891, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+  m_PrefabInstance: {fileID: 4060933050883608154}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1486957426 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
   m_PrefabInstance: {fileID: 4060933050883608154}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1486957427 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1922435585186743851, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+  m_PrefabInstance: {fileID: 4060933050883608154}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7f6c2680567c24459d75a4ce152b7b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1593776229
 GameObject:
   m_ObjectHideFlags: 0
@@ -2605,6 +2626,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1787613418}
   m_CullTransparentMesh: 1
+--- !u!4 &1867842424 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6582642968684375630, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+  m_PrefabInstance: {fileID: 4060933050883608154}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1880022024
 GameObject:
   m_ObjectHideFlags: 0
@@ -2723,6 +2749,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!4 &1903187005 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2797733909214692727, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+  m_PrefabInstance: {fileID: 4060933050883608154}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1919557242
 GameObject:
   m_ObjectHideFlags: 0
@@ -2881,6 +2912,11 @@ Transform:
   m_Father: {fileID: 1057085573}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1942041807 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4176725370059761606, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+  m_PrefabInstance: {fileID: 4060933050883608154}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2011831955
 GameObject:
   m_ObjectHideFlags: 0
@@ -3142,6 +3178,30 @@ PrefabInstance:
       propertyPath: PuffTime
       value: 0.03
       objectReference: {fileID: 0}
+    - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: movement
+      value: 
+      objectReference: {fileID: 1486957427}
+    - target: {fileID: 1922435585186743851, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: bodyTransform
+      value: 
+      objectReference: {fileID: 1270728403}
+    - target: {fileID: 1922435585186743851, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: headTransform
+      value: 
+      objectReference: {fileID: 1942041807}
+    - target: {fileID: 1922435585186743851, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: tailTransform
+      value: 
+      objectReference: {fileID: 1867842424}
+    - target: {fileID: 1922435585186743851, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: turnTransformA
+      value: 
+      objectReference: {fileID: 1903187005}
+    - target: {fileID: 1922435585186743851, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: turnTransformB
+      value: 
+      objectReference: {fileID: 1279172437}
     - target: {fileID: 4862713934919234444, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_Name
       value: Hedgehog
