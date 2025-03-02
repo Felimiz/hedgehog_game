@@ -53,8 +53,9 @@ public class RollingGroundCheck : MonoBehaviour
         }
         else if (!PlayerRay.collider)
         {
+            float turnAngle = Mathf.Atan2(PlayerRay.normal.y, PlayerRay.normal.x) * Mathf.Rad2Deg;
             float rotate = (controller.m_FacingRight ? +1 : -1) * 90;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, rotate, ref smoothVelocity, rotationSmoothing);
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, turnAngle, ref smoothVelocity, rotationSmoothing);
 
             transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
         }

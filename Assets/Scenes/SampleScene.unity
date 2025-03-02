@@ -278,7 +278,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 136402722}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -29.54, y: -1.48, z: 0}
+  m_LocalPosition: {x: -38.03, y: 2.36, z: 0}
   m_LocalScale: {x: 0.5947, y: 0.5947, z: 0.5947}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3144,12 +3144,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: rollingForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: RollingGroundCheck
       value: 
       objectReference: {fileID: 1908531166}
     - target: {fileID: 4862713934919234444, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_Name
       value: Hedgehog
+      objectReference: {fileID: 0}
+    - target: {fileID: 4908930125887921064, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_Material
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_RootOrder
@@ -3197,11 +3205,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7892594024393975357, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PlayerRayLength
-      value: 7.25
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7892594024393975357, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: rotationSmoothing
-      value: 0.96
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

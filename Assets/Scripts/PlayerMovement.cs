@@ -236,6 +236,11 @@ public class PlayerMovement : MonoBehaviour
 
         else // ºu°Ê¼Ò¦¡
         {
+            float targetAngle = 0;
+            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+
+            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
+            rayhit = false;
         }
     }
 

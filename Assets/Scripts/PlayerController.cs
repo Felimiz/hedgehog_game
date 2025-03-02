@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -209,7 +210,8 @@ public class CharacterController2D : MonoBehaviour
                 RollingCollider.enabled = true;
 
             m_Rigidbody2D.constraints = RigidbodyConstraints2D.None; // UnFreeze the Rotation of the player
-            AddForceAtAngle(rollingForce, RollingGroundCheck, (m_FacingRight ? +1 : -1)); // make player roll at the direction it faced and parellel to the ground
+            if(Mathf.Abs(move) > 0)
+            AddForceAtAngle(rollingForce, RollingGroundCheck, (move > 0 ? +1 : -1)); // make player roll at the direction it faced and parellel to the ground
 
         }
         else
@@ -244,13 +246,11 @@ public class CharacterController2D : MonoBehaviour
         transform.localScale = theScale;
     }
 
-    public void AddForceAtAngle(float force, Transform transform , int FacingRight)
+    public void AddForceAtAngle(float force, Transform transform , int Direction)
     {
-        
-        float xcomponent = Mathf.Cos(transform.rotation.x * Mathf.PI / 180) * force * FacingRight;
-        float ycomponent = Mathf.Sin(transform.rotation.y * Mathf.PI / 180) * force;
-        Vector2 vector2 = new Vector2(xcomponent, ycomponent);
+        float angle = transform.eulerAngles.z;
+        Vector2 rayDirection = new(Mathf.Cos((angle) * Mathf.Deg2Rad), Mathf.Sin((angle) * Mathf.Deg2Rad));
 
-        m_Rigidbody2D.AddForce(vector2);
+        m_Rigidbody2D.AddForce(rayDirection * force * Direction);
     }
 }
