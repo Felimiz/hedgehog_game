@@ -15,6 +15,7 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
     [SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
+    [SerializeField] private Transform RollingGroundCheck;                      // A position updating current ground angle
     [SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
     [SerializeField] private Collider2D m_RollDisableCollider;                  // A collider that will be disabled when rolling(Along with m_CrouchDisableCollider)
     [SerializeField] private CircleCollider2D RollingCollider;                // A collider that will be enabled when rolling
@@ -207,8 +208,8 @@ public class CharacterController2D : MonoBehaviour
             if (RollingCollider != null)
                 RollingCollider.enabled = true;
 
-            m_Rigidbody2D.constraints = RigidbodyConstraints2D.None;
-            m_Rigidbody2D.AddForce(m_GroundCheck.right * move * rollingForce); // Bug:施力方向會隨滾動轉向(交流電)
+            m_Rigidbody2D.constraints = RigidbodyConstraints2D.None; // UnFreeze the Rotation of the player
+            AddForceAtAngle(rollingForce, RollingGroundCheck, (m_FacingRight ? +1 : -1)); // make player roll at the direction it faced and parellel to the ground
 
         }
         else
@@ -241,5 +242,15 @@ public class CharacterController2D : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+
+    public void AddForceAtAngle(float force, Transform transform , int FacingRight)
+    {
+        
+        float xcomponent = Mathf.Cos(transform.rotation.x * Mathf.PI / 180) * force * FacingRight;
+        float ycomponent = Mathf.Sin(transform.rotation.y * Mathf.PI / 180) * force;
+        Vector2 vector2 = new Vector2(xcomponent, ycomponent);
+
+        m_Rigidbody2D.AddForce(vector2);
     }
 }

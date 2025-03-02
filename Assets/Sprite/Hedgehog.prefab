@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1159632220657214723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3622714716692656760}
+  - component: {fileID: 7892594024393975357}
+  m_Layer: 3
+  m_Name: RollingGroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3622714716692656760
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159632220657214723}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5422563397636853371}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7892594024393975357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159632220657214723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1feafc68d9203e458c8582422e5f41f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 169786077285022838}
+  PlayerTransform: {fileID: 5422563397636853371}
+  PlayerRayLength: 0.8
+  rotationSmoothing: 0.1
+  rayhit: 1
 --- !u!1 &2037925136091734843
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,6 +375,7 @@ Transform:
   - {fileID: 6003252869248540891}
   - {fileID: 2460077164098123860}
   - {fileID: 1878289354622763513}
+  - {fileID: 3622714716692656760}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -479,7 +529,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4862713934919234444}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -547,7 +597,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PuffRadius: 1
-  PuffTime: 0
+  PuffTime: 0.03
   adhesionForceA: 30
   adhesionForceB: 50
   rollingForce: 10
@@ -609,7 +659,7 @@ MonoBehaviour:
         m_CallState: 2
   m_wasRolling: 0
   IsFalling: 0
-  movement: {fileID: 0}
+  movement: {fileID: 1922435585186743851}
 --- !u!114 &1922435585186743851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -624,11 +674,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 169786077285022838}
   animator: {fileID: 6668067319049424258}
-  headTransform: {fileID: 0}
-  bodyTransform: {fileID: 0}
-  tailTransform: {fileID: 0}
-  turnTransformA: {fileID: 0}
-  turnTransformB: {fileID: 0}
+  headTransform: {fileID: 4176725370059761606}
+  bodyTransform: {fileID: 5767956370771149953}
+  tailTransform: {fileID: 6582642968684375630}
+  turnTransformA: {fileID: 2797733909214692727}
+  turnTransformB: {fileID: 6003252869248540891}
   mainrayLength: 0.3
   checkArayLength: 0.8
   checkBrayLength: 0.15
