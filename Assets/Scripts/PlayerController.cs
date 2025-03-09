@@ -6,8 +6,8 @@ using static UnityEditor.Progress;
 
 public class CharacterController2D : MonoBehaviour
 {
-    [Range(0.7f, 2)][SerializeField] private float PuffRadius = 1.5f;                          // Amount of force added when the player jumps.
-    [Range(0, 2)][SerializeField] private float PuffTime = 0.5f;
+    [Range(0.7f, 5)][SerializeField] private float PuffRadius = 1.5f;                          // Amount of force added when the player jumps.
+    [Range(0, 5)][SerializeField] private float PuffTime = 0.5f;
     [SerializeField] public float adhesionForceA = 30f;                         // Adhension force while on ground
     [SerializeField] public float adhesionForceB = 50f;                         // Adhension force while NOT on ground
     [SerializeField] private float rollingForce = 10f;
@@ -16,7 +16,8 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
     [SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
-    [SerializeField] private Transform RollingGroundCheck;                      // A position updating current ground angle
+    [SerializeField] private Transform GroundAngle;                      // A position updating current ground angle
+    [SerializeField] private RollingGroundCheck rollingGroundCheck;      //This one is for Checking the ground while rolling
     [SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
     [SerializeField] private Collider2D m_RollDisableCollider;                  // A collider that will be disabled when rolling(Along with m_CrouchDisableCollider)
     [SerializeField] private CircleCollider2D RollingCollider;                // A collider that will be enabled when rolling
@@ -186,11 +187,11 @@ public class CharacterController2D : MonoBehaviour
         if (puff)
         {
             Debug.Log("Puffing");
-            RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, PuffRadius, PuffTime);
+            RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, PuffRadius, Mathf.Sqrt(PuffTime));
         }
         else
         {
-            RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, RCOriginalRad, PuffTime);
+            RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, RCOriginalRad, Mathf.Sqrt(PuffTime));
         }
         // If the player roll...
         if (roll)
@@ -211,7 +212,7 @@ public class CharacterController2D : MonoBehaviour
 
             m_Rigidbody2D.constraints = RigidbodyConstraints2D.None; // UnFreeze the Rotation of the player
             if(Mathf.Abs(move) > 0)
-            AddForceAtAngle(rollingForce, RollingGroundCheck, (move > 0 ? +1 : -1)); // make player roll at the direction it faced and parellel to the ground
+            AddForceAtAngle(rollingForce, GroundAngle, (move > 0 ? +1 : -1)); // make player roll at the direction it faced and parellel to the ground
 
         }
         else
@@ -250,7 +251,6 @@ public class CharacterController2D : MonoBehaviour
     {
         float angle = transform.eulerAngles.z;
         Vector2 rayDirection = new(Mathf.Cos((angle) * Mathf.Deg2Rad), Mathf.Sin((angle) * Mathf.Deg2Rad));
-
-        m_Rigidbody2D.AddForce(rayDirection * force * Direction);
+        m_Rigidbody2D.AddForce(rayDirection * force * Direction * (rollingGroundCheck.Grounded? 1 :0)) ; 
     }
 }

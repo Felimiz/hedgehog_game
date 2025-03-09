@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private float smoothVelocity = 0;
 
     float horizontalMove = 0f;
-    bool puff = false;
+    public bool puff = false;
     bool crouch = false;
     bool roll = false;
 
@@ -236,11 +236,7 @@ public class PlayerMovement : MonoBehaviour
 
         else // ºu°Ê¼Ò¦¡
         {
-            float targetAngle = 0;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
 
-            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
-            rayhit = false;
         }
     }
 
