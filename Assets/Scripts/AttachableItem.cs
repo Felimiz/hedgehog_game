@@ -13,7 +13,7 @@ public class AttachableItem : MonoBehaviour
     private Rigidbody2D itemRB;
     private GameObject target; // 附著者
     private Vector3 posOffset; // 1.蘋果和玩家的距離(固定) 2.玩家->蘋果 的方向
-    private bool is_attached = false;
+    public bool is_attached = false;
 
     private void Awake()
     {
