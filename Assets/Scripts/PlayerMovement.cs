@@ -126,7 +126,43 @@ public class PlayerMovement : MonoBehaviour
         // Move our character
         controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, puff, roll);
 
-        //Raycast detection
+        // Raycast detection V2
+        float CurrentAngle = transform.eulerAngles.z;
+        RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, -transform.up, mainrayLength, 1 << 0); // 位於玩家頭部的偵測射線，向玩家正下方發射
+        RaycastHit2D tailRay = Physics2D.Raycast(tailTransform.position, -transform.up, mainrayLength, 1 << 0); // 尾部的偵測射線，向玩家正下方發射
+
+        if (!controller.m_wasRolling) // 移動模式時的射線偵測，畫出所有射線
+        {
+            Debug.DrawRay(headTransform.position, -transform.up * mainrayLength, Color.red, 0, true);
+            Debug.DrawRay(tailTransform.position, -transform.up * mainrayLength, Color.red, 0, true);
+
+            if (headRay.collider && tailRay.collider)
+            {
+                rayhit = true;
+                Vector3 headNormal = headRay.normal;
+                Vector3 tailNormal = tailRay.normal;
+                Vector3 aveNormal = (headNormal + tailNormal) / 2; //取偵測到的兩地面法線之平均值
+
+                if (!isRotating)
+                {
+                    targetAngle = Mathf.Atan2(aveNormal.y, aveNormal.x) * Mathf.Rad2Deg - 90;
+                    Rotate();
+                }
+            }
+            else
+            {
+                rayhit = false;
+
+                if (!isRotating)
+                {
+                    targetAngle = 0;
+                    Rotate();
+                }
+            }
+        }
+
+        //Raycast detection V1
+        /*
         float CurrentAngle = transform.eulerAngles.z;
         float facing = (controller.m_FacingRight ? +1 : -1); // 決定玩家移動方向
         Vector2 rayDirection = new(Mathf.Cos((CurrentAngle - 90) * Mathf.Deg2Rad), Mathf.Sin((CurrentAngle - 90) * Mathf.Deg2Rad)); // 決定偵測地面的射線的方向，相對於玩家X軸正向順時鐘轉九十度(法線)
@@ -238,6 +274,7 @@ public class PlayerMovement : MonoBehaviour
         {
 
         }
+        */
     }
 
     void Rotate()

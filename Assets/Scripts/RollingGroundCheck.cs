@@ -30,45 +30,48 @@ public class RollingGroundCheck : MonoBehaviour
 
     void FixedUpdate()
     {
-        //Raycast detection
-        float angle = transform.eulerAngles.z;
-        Vector2 rayDirection = new(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
-
-        RaycastHit2D PlayerRay = Physics2D.Raycast(PlayerTransform.position, rayDirection, PlayerRayLength * (isPuffing.puff ? PuffingMagnify : 1), 1 << 0);
-
-        if (PlayerRay.collider)
+        if (controller.m_wasRolling) //幫你加了個這ㄍ
         {
-            Debug.DrawRay(PlayerTransform.position, rayDirection * PlayerRayLength * (isPuffing.puff ? PuffingMagnify : 1), Color.red, 0, true);
-        }
-        else
-        {
-            Debug.DrawRay(PlayerTransform.position, rayDirection * PlayerRayLength * (isPuffing.puff ? PuffingMagnify : 1), Color.blue, 0, true);
-        }
+            //Raycast detection
+            float angle = transform.eulerAngles.z;
+            Vector2 rayDirection = new(Mathf.Cos((angle - 90) * Mathf.Deg2Rad), Mathf.Sin((angle - 90) * Mathf.Deg2Rad));
 
-        float normalAngle = Mathf.Atan2(PlayerRay.normal.y, PlayerRay.normal.x) * Mathf.Rad2Deg;
+            RaycastHit2D PlayerRay = Physics2D.Raycast(PlayerTransform.position, rayDirection, PlayerRayLength * (isPuffing.puff ? PuffingMagnify : 1), 1 << 0);
 
-        if (PlayerRay.collider)
-        {
-            float targetAngle = normalAngle - 90;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+            if (PlayerRay.collider)
+            {
+                Debug.DrawRay(PlayerTransform.position, rayDirection * PlayerRayLength * (isPuffing.puff ? PuffingMagnify : 1), Color.red, 0, true);
+            }
+            else
+            {
+                Debug.DrawRay(PlayerTransform.position, rayDirection * PlayerRayLength * (isPuffing.puff ? PuffingMagnify : 1), Color.blue, 0, true);
+            }
 
-            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
-            Grounded = true;
-        }
-        else if (!PlayerRay.collider)
-        {
-            float turnAngle = Mathf.Atan2(PlayerRay.normal.y, PlayerRay.normal.x) * Mathf.Rad2Deg;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, turnAngle, ref smoothVelocity, rotationSmoothing);
+            float normalAngle = Mathf.Atan2(PlayerRay.normal.y, PlayerRay.normal.x) * Mathf.Rad2Deg;
 
-            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
-            Grounded = false;
-        }
-        else
-        {
-            float targetAngle = 0;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+            if (PlayerRay.collider)
+            {
+                float targetAngle = normalAngle - 90;
+                float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
 
-            transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
+                transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
+                Grounded = true;
+            }
+            else if (!PlayerRay.collider)
+            {
+                float turnAngle = Mathf.Atan2(PlayerRay.normal.y, PlayerRay.normal.x) * Mathf.Rad2Deg;
+                float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, turnAngle, ref smoothVelocity, rotationSmoothing);
+
+                transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
+                Grounded = false;
+            }
+            else
+            {
+                float targetAngle = 0;
+                float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref smoothVelocity, rotationSmoothing);
+
+                transform.rotation = Quaternion.Euler(0, 0, smoothAngle);
+            }
         }
     }
 }
