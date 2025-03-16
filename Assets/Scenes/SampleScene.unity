@@ -616,7 +616,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -51.87, y: -1.98, z: -9.9747925}
+  m_LocalPosition: {x: -66.96, y: -0.31, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -911,7 +911,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817842334}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -51.87, y: -1.98, z: -9.9747925}
+  m_LocalPosition: {x: -66.96, y: -0.31, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1937,8 +1937,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1527546370}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -52.07, y: 7.06, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -64.1842, y: 17.2695, z: 0}
+  m_LocalScale: {x: 1.8878535, y: 1.8878535, z: 1.8878535}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1980,7 +1980,7 @@ PolygonCollider2D:
   m_GameObject: {fileID: 1527546370}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: f529b0b9c67581e448f8dc9d0475c560, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3740,17 +3740,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Hedgehog
       objectReference: {fileID: 0}
+    - target: {fileID: 4908930125887921064, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -51.87
+      value: -66.96
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.98
+      value: -0.31
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.z
