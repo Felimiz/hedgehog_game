@@ -106,8 +106,6 @@ public class CharacterController2D : MonoBehaviour
             m_adhesionForce = 0f;
         }
 
-        //Debug.Log(m_adhesionForce);
-
         
         if (m_Grounded)
         {
@@ -231,11 +229,12 @@ public class CharacterController2D : MonoBehaviour
             if (RollingCollider != null)
                 RollingCollider.enabled = false;
 
-            m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+            //強制鎖定旋轉
+            //m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
 
-
+    
     private void Flip()
     {
         // Switch the way the player is labelled as facing.

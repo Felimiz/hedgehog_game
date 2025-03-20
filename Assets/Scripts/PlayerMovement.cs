@@ -149,6 +149,7 @@ public class PlayerMovement : MonoBehaviour
                     Rotate();
                 }
             }
+            /* 未偵測到地面時重置角度
             else
             {
                 rayhit = false;
@@ -159,122 +160,10 @@ public class PlayerMovement : MonoBehaviour
                     Rotate();
                 }
             }
-        }
-
-        //Raycast detection V1
-        /*
-        float CurrentAngle = transform.eulerAngles.z;
-        float facing = (controller.m_FacingRight ? +1 : -1); // 決定玩家移動方向
-        Vector2 rayDirection = new(Mathf.Cos((CurrentAngle - 90) * Mathf.Deg2Rad), Mathf.Sin((CurrentAngle - 90) * Mathf.Deg2Rad)); // 決定偵測地面的射線的方向，相對於玩家X軸正向順時鐘轉九十度(法線)
-        Vector2 turnrayDirection = new(Mathf.Cos((CurrentAngle - 180) * Mathf.Deg2Rad) * facing, Mathf.Sin((CurrentAngle - 180) * Mathf.Deg2Rad) * facing); // 玩家面對方向的反向(即X軸反向)，轉向時轉向
-
-        RaycastHit2D headRay = Physics2D.Raycast(headTransform.position, rayDirection, mainrayLength, 1 << 0); // 位於玩家頭部的偵測射線，照玩家X軸法線發射
-        RaycastHit2D bodyRay = Physics2D.Raycast(bodyTransform.position, rayDirection, mainrayLength, 1 << 0); // 身體中間的偵測射線，照玩家X軸法線發射
-        RaycastHit2D tailRay = Physics2D.Raycast(tailTransform.position, rayDirection, mainrayLength, 1 << 0); // 尾部的偵測射線，照玩家X軸法線發射
-        RaycastHit2D turnRayA = Physics2D.Raycast(turnTransformA.position, turnrayDirection, checkArayLength, 1 << 0); // 在玩家底部的射線，照玩家面對反向發射
-        RaycastHit2D turnRayB = Physics2D.Raycast(turnTransformB.position, -turnrayDirection, checkBrayLength, 1 << 0); // 在刺蝟嘴邊的射線，照玩家面對方向發射
-
-        if (!controller.m_wasRolling) // 移動模式時的射線偵測，畫出所有射線
-        {
-            if (headRay.collider)
-            {
-                Debug.DrawRay(headTransform.position, rayDirection * mainrayLength, Color.red, 0, true);
-            }
-            else
-            {
-                Debug.DrawRay(headTransform.position, rayDirection * mainrayLength, Color.blue, 0, true);
-            }
-
-            if (bodyRay.collider)
-            {
-                Debug.DrawRay(bodyTransform.position, rayDirection * mainrayLength, Color.red, 0, true);
-            }
-            else
-            {
-                Debug.DrawRay(bodyTransform.position, rayDirection * mainrayLength, Color.blue, 0, true);
-            }
-
-            if (tailRay.collider)
-            {
-                Debug.DrawRay(tailTransform.position, rayDirection * mainrayLength, Color.red, 0, true);
-            }
-            else
-            {
-                Debug.DrawRay(tailTransform.position, rayDirection * mainrayLength, Color.blue, 0, true);
-            }
-
-            if (turnRayA.collider)
-            {
-                Debug.DrawRay(turnTransformA.position, turnrayDirection * checkArayLength, Color.red, 0, true);
-                rayhit = true;
-            }
-            else
-            {
-                Debug.DrawRay(turnTransformA.position, turnrayDirection * checkArayLength, Color.blue, 0, true);
-                rayhit = false;
-            }
-
-            if (turnRayB.collider)
-            {
-                Debug.DrawRay(turnTransformB.position, -turnrayDirection * checkBrayLength, Color.red, 0, true);
-            }
-            else
-            {
-                Debug.DrawRay(turnTransformB.position, -turnrayDirection * checkBrayLength, Color.blue, 0, true);
-            }
-
-
-            if (!isRotating) // 是否執行Rotate()
-            {
-                if (!headRay.collider && !bodyRay.collider && tailRay.collider && turnRayA.collider && !turnRayB.collider) // 尾部和底部的射線偵測到地面
-                {
-                    turnAngle = Mathf.Atan2(turnRayA.normal.y, turnRayA.normal.x) * Mathf.Rad2Deg; // 取得玩家(底部射線)與地面的夾角
-                    targetAngle = turnAngle - 90; // 將變量設定成正確旋轉角度
-                    isRotating = true;
-                }
-                else if (turnRayB.collider) // 嘴邊射線偵測到地面
-                {
-                    turnAngle = Mathf.Atan2(turnRayB.normal.y, turnRayB.normal.x) * Mathf.Rad2Deg; // 取得玩家(嘴邊射線)與地面的夾角
-                    targetAngle = turnAngle - 90;
-                    isRotating = true;
-
-                }
-                else if (!headRay.collider && !bodyRay.collider && !tailRay.collider) // 頭部、身體、尾部射線皆未偵測到地面(不考慮底部&嘴邊)
-                {
-                    targetAngle = 0;
-                    isRotating = true;
-                }
-
-                else // 當底部、嘴邊射線皆未偵測到地面，但頭部、身體、尾部個別偵測到地面時，將玩家對齊地面
-                {
-                    if (bodyRay.collider)
-                    {
-                        turnAngle = Mathf.Atan2(bodyRay.normal.y, bodyRay.normal.x) * Mathf.Rad2Deg;
-                    }
-                    else if (tailRay.collider)
-                    {
-                        turnAngle = Mathf.Atan2(tailRay.normal.y, tailRay.normal.x) * Mathf.Rad2Deg;
-                    }
-                    else if (headRay.collider)
-                    {
-                        turnAngle = Mathf.Atan2(headRay.normal.y, headRay.normal.x) * Mathf.Rad2Deg;
-                    }
-                    targetAngle = turnAngle - 90;
-                    isRotating = true;
-                }
-            }
-
-            if (isRotating)
-            {
-                Rotate();
-            }
-        }
-
-        else // 滾動模式
-        {
+            */
 
         }
-        */
+
     }
 
     void Rotate()
