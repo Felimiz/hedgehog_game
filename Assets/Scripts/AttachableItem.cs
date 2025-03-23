@@ -40,24 +40,10 @@ public class AttachableItem : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            itemRB.bodyType = RigidbodyType2D.Dynamic; // 將蘋果狀態轉為"動態"
-            target = collision.gameObject;
-            posOffset = item.position - target.transform.position;
-            item.parent = target.transform; //與玩家建立子母關係
-            //itemCol.enabled = false; // 取消蘋果collider
-            is_attached = true;
-            itemRB.constraints = RigidbodyConstraints2D.FreezeRotation; // 將蘋果Z軸鎖定
-            Debug.Log(posOffset);
         }
     }
 
     private void Detach()
     {
-        is_attached = false;
-        itemRB.AddForce(posOffset * detachForce); // 將蘋果朝玩家座標向蘋果的方向施力
-        item.parent = null; //解除與玩家的子母關係
-        itemRB.constraints = RigidbodyConstraints2D.None; // 取消Z軸鎖定
-        //yield return new WaitForSeconds(0.1f);
-        //temCol.enabled = true; // 開啟蘋果collider
     }
 }

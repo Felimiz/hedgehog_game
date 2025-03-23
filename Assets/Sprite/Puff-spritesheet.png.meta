@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e87ac360507116848ac73538ea88afe2
+guid: dbbd87aee6c746c47b9e2c611e07d378
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,7 +117,70 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Puff-spritesheet_0
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 16
+        width: 63
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c19cc67336423149b3f29a0719a6068
+      internalID: -472362879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puff-spritesheet_1
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 17
+        width: 49
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 709ad98390968114fb1787ec569059a0
+      internalID: 1724490740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Puff-spritesheet_2
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 12
+        width: 70
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b57392ecd572ee247b6cd7e9e60b1216
+      internalID: 673854183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -128,7 +191,10 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Puff-spritesheet_0: -472362879
+      Puff-spritesheet_1: 1724490740
+      Puff-spritesheet_2: 673854183
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -29,9 +29,10 @@ public class PlayerMovement : MonoBehaviour
     private float smoothVelocity = 0;
 
     float horizontalMove = 0f;
-    public bool puff = false;
+    bool puff = false;
     bool crouch = false;
     bool roll = false;
+    [SerializeField] bool PuffImpulse = false;
 
     void Start()
     {
@@ -124,7 +125,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // Move our character
-        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, puff, roll);
+        controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, puff, roll, PuffImpulse);
 
         //Raycast detection
         float CurrentAngle = transform.eulerAngles.z;

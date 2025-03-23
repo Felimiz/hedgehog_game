@@ -45,10 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 169786077285022838}
+  isPuffing: {fileID: 0}
   PlayerTransform: {fileID: 5422563397636853371}
   PlayerRayLength: 0.8
   rotationSmoothing: 0.1
   rayhit: 1
+  PuffingMagnify: 0
+  Grounded: 0
 --- !u!1 &2037925136091734843
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,6 +611,8 @@ MonoBehaviour:
     m_Bits: 51
   m_GroundCheck: {fileID: 2460077164098123860}
   m_CeilingCheck: {fileID: 1878289354622763513}
+  GroundAngle: {fileID: 0}
+  rollingGroundCheck: {fileID: 0}
   m_CrouchDisableCollider: {fileID: 6573872132605404144}
   m_RollDisableCollider: {fileID: 4908930125887921064}
   RollingCollider: {fileID: 6905487189022050155}
@@ -686,6 +691,7 @@ MonoBehaviour:
   rotationSmoothing: 0.1
   rayhit: 0
   isRotating: 0
+  puff: 0
 --- !u!1 &5869075135801776921
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,7 @@
+using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using static UnityEditor.Progress;
@@ -14,13 +16,14 @@ public class CharacterController2D : MonoBehaviour
     [Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
     [Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
+    [SerializeField] private LayerMask m_WhatIsBouncible;
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
     [SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
-    [SerializeField] private Transform GroundAngle;                      // A position updating current ground angle
-    [SerializeField] private RollingGroundCheck rollingGroundCheck;      //This one is for Checking the ground while rolling
     [SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
     [SerializeField] private Collider2D m_RollDisableCollider;                  // A collider that will be disabled when rolling(Along with m_CrouchDisableCollider)
     [SerializeField] private CircleCollider2D RollingCollider;                // A collider that will be enabled when rolling
+    [SerializeField] private SpriteRenderer m_spriteRenderer;
+    [SerializeField] private AnimationCurve PuffAnimationCurve;
 
     const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
     private bool m_Grounded;            // Whether or not the player is grounded.
@@ -30,6 +33,10 @@ public class CharacterController2D : MonoBehaviour
     private Vector3 m_Velocity = Vector3.zero;
     private float m_adhesionForce;
     private float RCOriginalRad; // the oringinal radius of rolling collider
+    public float ColliderRad2Sprite = 2;
+    public float ColliderRad2Bounce = 1.5f; // Since Unity is so stupid that couldnt unify the units, I had to do dis
+    private int CollisionCount;
+    float Bounciness = 0;
 
     [Header("Events")]
     [Space]
@@ -52,6 +59,7 @@ public class CharacterController2D : MonoBehaviour
     {
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         RCOriginalRad = RollingCollider.radius;
+        Bounciness = RollingCollider.sharedMaterial.bounciness;
 
         if (OnLandEvent == null)
             OnLandEvent = new UnityEvent();
@@ -64,6 +72,12 @@ public class CharacterController2D : MonoBehaviour
 
         if (movement == null)
             movement = GetComponent<PlayerMovement>();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(this.transform.position, RollingCollider.radius * ColliderRad2Bounce);
     }
 
     private void FixedUpdate()
@@ -119,7 +133,7 @@ public class CharacterController2D : MonoBehaviour
         }
         */
     }
-    public void Move(float move, bool crouch, bool puff, bool roll)
+    public void Move(float move, bool crouch, bool puff, bool roll, bool PuffImpulse)
     {
         // If crouching, check to see if the character can stand up
         if (!crouch)
@@ -184,14 +198,28 @@ public class CharacterController2D : MonoBehaviour
             }
         }
         // If the player should puff...
-        if (puff)
+        if (puff && roll)
         {
-            Debug.Log("Puffing");
             RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, PuffRadius, Mathf.Sqrt(PuffTime));
+            m_spriteRenderer.size = new Vector2(RollingCollider.radius * ColliderRad2Sprite, RollingCollider.radius * ColliderRad2Sprite); // Sprite scales along with radius
+            
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, RollingCollider.radius * ColliderRad2Bounce, m_WhatIsBouncible);
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                CollisionCount++;
+            }
+            Debug.Log("ColliisonCount = " + CollisionCount + ", Bounciness = " + Bounciness);
+            Bounciness = PuffAnimationCurve.Evaluate(CollisionCount/*LOWER PER HIT, BUT REFRESH PER PUFF; ADDITIONALY, WEAKENS WHEN FAR DISTANCED(?*/);
+            RollingCollider.sharedMaterial.bounciness = Bounciness;
         }
         else
         {
+            Debug.Log("PuffImpulseOFF");
             RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, RCOriginalRad, Mathf.Sqrt(PuffTime));
+            m_spriteRenderer.size = new Vector2(RollingCollider.radius * ColliderRad2Sprite, RollingCollider.radius * ColliderRad2Sprite);
+            CollisionCount = 0;
+            Bounciness = 0;
+            RollingCollider.sharedMaterial.bounciness = Bounciness;
         }
         // If the player roll...
         if (roll)
@@ -211,8 +239,9 @@ public class CharacterController2D : MonoBehaviour
                 RollingCollider.enabled = true;
 
             m_Rigidbody2D.constraints = RigidbodyConstraints2D.None; // UnFreeze the Rotation of the player
-            if(Mathf.Abs(move) > 0)
-            AddForceAtAngle(rollingForce, GroundAngle, (move > 0 ? +1 : -1)); // make player roll at the direction it faced and parellel to the ground
+            if (Mathf.Abs(move) > 0)
+                // AddForceAtAngle(rollingForce, GroundAngle, (move > 0 ? +1 : -1)); // make player roll at the direction it faced and parellel to the ground
+                spin(move > 0 ? -1 : 1) ;
 
         }
         else
@@ -246,11 +275,17 @@ public class CharacterController2D : MonoBehaviour
         theScale.x *= -1;
         transform.localScale = theScale;
     }
-
+    /*
     public void AddForceAtAngle(float force, Transform transform , int Direction)
     {
         float angle = transform.eulerAngles.z;
         Vector2 rayDirection = new(Mathf.Cos((angle) * Mathf.Deg2Rad), Mathf.Sin((angle) * Mathf.Deg2Rad));
         m_Rigidbody2D.AddForce(rayDirection * force * Direction * (rollingGroundCheck.Grounded? 1 :0)) ; 
     }
+    */
+    private void spin(int direction)
+    {
+        m_Rigidbody2D.AddTorque(rollingForce * direction, ForceMode2D.Force);
+    }
+
 }
