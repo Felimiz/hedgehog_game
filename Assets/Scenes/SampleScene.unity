@@ -774,7 +774,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -32.99, y: -1.72, z: -9.9747925}
+  m_LocalPosition: {x: -43.07, y: -1.62, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1311,7 +1311,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 817842334}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -32.99, y: -1.72, z: -9.9747925}
+  m_LocalPosition: {x: -43.07, y: -1.62, z: -9.9747925}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3643,6 +3643,10 @@ PrefabInstance:
       value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
+      propertyPath: m_FacingRight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: RollingGrounded
       value: 0
       objectReference: {fileID: 0}
@@ -3692,15 +3696,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[1].time
-      value: 100
+      value: 2.0697281
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[0].value
-      value: 0
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[1].value
-      value: 100
+      value: 0.08455598
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: OnLandEvent.m_PersistentCalls.m_Calls.Array.size
@@ -3712,7 +3716,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[1].inSlope
-      value: 2
+      value: 0.00850637
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[0].outSlope
@@ -3720,11 +3724,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[1].inWeight
-      value: 0
+      value: 0.3043478
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[1].outSlope
-      value: 2
+      value: 0.00850637
       objectReference: {fileID: 0}
     - target: {fileID: 169786077285022838, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: PuffAnimationCurve.m_Curve.Array.data[0].outWeight
@@ -3800,7 +3804,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3629923066365612084, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_AngularDrag
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3629923066365612084, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_CollisionDetection
@@ -3828,11 +3832,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -32.99
+      value: -43.07
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.72
+      value: -1.62
       objectReference: {fileID: 0}
     - target: {fileID: 5422563397636853371, guid: c43fde614f1835644b8d1d10711fed60, type: 3}
       propertyPath: m_LocalPosition.z

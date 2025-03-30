@@ -1,3 +1,6 @@
+using Cinemachine;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -8,7 +11,7 @@ using static UnityEditor.Progress;
 
 public class CharacterController2D : MonoBehaviour
 {
-    [Range(0.7f, 5)][SerializeField] private float PuffRadius = 1.5f;                          // Amount of force added when the player jumps.
+    [Range(0.7f, 5)][SerializeField] private float PuffRadius = 1.5f;           // The Class name speaks for itself UWU
     [Range(0, 5)][SerializeField] private float PuffTime = 0.5f;
     [SerializeField] public float adhesionForceA = 30f;                         // Adhension force while on ground
     [SerializeField] public float adhesionForceB = 50f;                         // Adhension force while NOT on ground
@@ -21,22 +24,23 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
     [SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
     [SerializeField] private Collider2D m_RollDisableCollider;                  // A collider that will be disabled when rolling(Along with m_CrouchDisableCollider)
-    [SerializeField] private CircleCollider2D RollingCollider;                // A collider that will be enabled when rolling
+    [SerializeField] private CircleCollider2D RollingCollider;                  // A collider that will be enabled when rolling
     [SerializeField] private SpriteRenderer m_spriteRenderer;
     [SerializeField] private AnimationCurve PuffAnimationCurve;
 
-    const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
-    private bool m_Grounded;            // Whether or not the player is grounded.
-    const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
+    const float k_GroundedRadius = .2f;                                         // Radius of the overlap circle to determine if grounded
+    private bool m_Grounded;                                                    // Whether or not the player is grounded.
+    const float k_CeilingRadius = .2f;                                          // Radius of the overlap circle to determine if the player can stand up
     private Rigidbody2D m_Rigidbody2D;
-    public bool m_FacingRight = true;  // For determining which way the player is currently facing.
+    public bool m_FacingRight = true;                                           // For determining which way the player is currently facing.
     private Vector3 m_Velocity = Vector3.zero;
     private float m_adhesionForce;
-    private float RCOriginalRad; // the oringinal radius of rolling collider
+    private float RCOriginalRad;                                                // the oringinal radius of rolling collider
     public float ColliderRad2Sprite = 2;
-    public float ColliderRad2Bounce = 1.5f; // Since Unity is so stupid that couldnt unify the units, I had to do dis
+    public float ColliderRad2Bounce = 1.5f;                                     // Since Unity is so stupid that couldnt unify the units, I had to do dis
     private int CollisionCount;
     float Bounciness = 0;
+    private List<Collider2D> ColliderBlackList = new List<Collider2D>();        // Preventing Touched Colliders to activate CollisionCount again.
 
     [Header("Events")]
     [Space]
@@ -204,21 +208,19 @@ public class CharacterController2D : MonoBehaviour
             m_spriteRenderer.size = new Vector2(RollingCollider.radius * ColliderRad2Sprite, RollingCollider.radius * ColliderRad2Sprite); // Sprite scales along with radius
             
             Collider2D[] colliders = Physics2D.OverlapCircleAll(this.transform.position, RollingCollider.radius * ColliderRad2Bounce, m_WhatIsBouncible);
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                CollisionCount++;
-            }
+
+             // ONCOLLISIONENTER TO PLUS COLLIDERCOUNT, DISABLE THE COLLISIONCOUNT BY SENDING OUT A SIGNAL, DISABLING ALL TERRAIN IN THE MEANTIME
+             // OMCOLLISIOMEXIT TO ENABLE ALL INTERACTION TO ALL THE TERRAIN, MAKING THE COLLISIONCOUNT ABLE TO WORK�ϢբϢעܡD
             Debug.Log("ColliisonCount = " + CollisionCount + ", Bounciness = " + Bounciness);
             Bounciness = PuffAnimationCurve.Evaluate(CollisionCount/*LOWER PER HIT, BUT REFRESH PER PUFF; ADDITIONALY, WEAKENS WHEN FAR DISTANCED(?*/);
             RollingCollider.sharedMaterial.bounciness = Bounciness;
         }
         else
         {
-            Debug.Log("PuffImpulseOFF");
             RollingCollider.radius = Mathf.Lerp(RollingCollider.radius, RCOriginalRad, Mathf.Sqrt(PuffTime));
             m_spriteRenderer.size = new Vector2(RollingCollider.radius * ColliderRad2Sprite, RollingCollider.radius * ColliderRad2Sprite);
-            CollisionCount = 0;
             Bounciness = 0;
+            CollisionCount = 0;
             RollingCollider.sharedMaterial.bounciness = Bounciness;
         }
         // If the player roll...
@@ -288,4 +290,27 @@ public class CharacterController2D : MonoBehaviour
         m_Rigidbody2D.AddTorque(rollingForce * direction, ForceMode2D.Force);
     }
 
+    // ONCOLLISIONENTER TO PLUS COLLIDERCOUNT, DISABLE THE COLLISIONCOUNT BY SENDING OUT A SIGNAL, DISABLING ALL TERRAIN IN THE MEANTIME
+    // OMCOLLISIOMEXIT TO ENABLE ALL INTERACTION TO ALL THE TERRAIN, MAKING THE COLLISIONCOUNT ABLE TO WORK�ϢբϢעܡD
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Memorize the colliding object, then disable the count after triggering collisionCount once(NOT DISABLING ALL OF THEM)
+        // Putting the colliding Object into a list, then Disable CollisionCount to all stuff in it. (Fak u C#)
+        if (!ColliderBlackList.Any()) // Preventing the Null List Problem
+        {
+            CollisionCount++;
+            ColliderBlackList.Add(collision.collider);
+        }
+        else if (!(ColliderBlackList.Contains(collision.collider)))
+        {
+            CollisionCount++;
+            ColliderBlackList.Add(collision.collider);
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        // Remove the collider player exits out of the BlackList
+        if (ColliderBlackList.Any())
+            ColliderBlackList.Clear();
+    }
 }
